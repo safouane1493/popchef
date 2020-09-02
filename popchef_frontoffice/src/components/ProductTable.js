@@ -13,7 +13,6 @@ const ProductTable = props => (
                 props.products.map(product => (
                     <tr key={product.id}>
                         <td>{product.name}</td>
-                        <td>{product.username}</td>
                         <td>
                             <button
                                 className="button muted-button"
