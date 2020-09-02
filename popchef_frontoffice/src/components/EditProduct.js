@@ -7,7 +7,7 @@ const EditProduct = props => {
         () => {
             setProduct(props.currentProduct);
         },
-        [props]
+        []
     );
 
     const handleInputChange = event => {

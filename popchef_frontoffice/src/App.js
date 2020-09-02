@@ -13,7 +13,7 @@ const App = () => {
     fetch("http://localhost:3000/api/products")
       .then(response => response.json())
       .then(response => setProducts(response))
-      .catch(response => alert(response))
+      .catch(response => console.log("erreur fetching products"))
 
   }, [products])
 
@@ -44,15 +44,17 @@ const App = () => {
 
   const editProduct = product => {
     setEditing(true);
-    setCurrentProduct({ name: product.name, description: product.description, price: product.price });
+    setCurrentProduct({ id: product.id, name: product.name, description: product.description, price: product.price });
   };
 
   const updateProduct = (id, updateProduct) => {
-    alert(id)
     setEditing(false);
     fetch(`http://localhost:3000/api/products/${id}`, {
       method: 'PUT',
-      body: updateProduct
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updateProduct)
     })
       .then(response => response.json())
       .then(response => setProducts(response))
@@ -62,7 +64,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <p>{JSON.stringify(products)}</p>
       {editing ? (
         <div>
           <h2>Modifier Produit</h2>
