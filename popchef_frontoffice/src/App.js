@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ProductTable from "./components/ProductTable";
 import AddProduct from "./components/AddProduct";
+import EditProduct from "./components/EditProduct";
 
 const App = () => {
   const [products, setProducts] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState({ id: null, name: "", description: "", price: "" });
+
+
   useEffect(() => {
     fetch("http://localhost:3000/api/products")
       .then(response => response.json())
@@ -16,11 +21,14 @@ const App = () => {
 
     fetch('http://localhost:3000/api/products', {
       method: 'POST',
-      body: product
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(product)
     })
       .then(response => response.json())
       .then(response => setProducts(response))
-      .catch(response => alert('ouuuh'))
+      .catch(response => console.log("erreur add product"))
 
   };
 
@@ -31,16 +39,48 @@ const App = () => {
     })
       .then(response => response.json())
       .then(response => setProducts(response))
-      .catch(response => alert(response))
+      .catch(response => console.log("erreur delete"))
+  };
+
+  const editProduct = product => {
+    setEditing(true);
+    setCurrentProduct({ name: product.name, description: product.description, price: product.price });
+  };
+
+  const updateProduct = (id, updateProduct) => {
+    alert(id)
+    setEditing(false);
+    fetch(`http://localhost:3000/api/products/${id}`, {
+      method: 'PUT',
+      body: updateProduct
+    })
+      .then(response => response.json())
+      .then(response => setProducts(response))
+      .catch(response => console.log("erreur update"))
   };
 
 
   return (
     <div className="App">
       <p>{JSON.stringify(products)}</p>
+      {editing ? (
+        <div>
+          <h2>Modifier Produit</h2>
+          <EditProduct
+            editing={editing}
+            setEditing={setEditing}
+            currentProduct={currentProduct}
+            updateProduct={updateProduct}
+          />
+        </div>
+      ) : (
+          <div>
+            <h2>Ajouter produit</h2>
+            <AddProduct addProduct={addProduct} />
+          </div>
+        )}
 
-      <AddProduct addProduct={addProduct} />
-      <ProductTable products={products} deleteProduct={deleteProduct} />
+      <ProductTable products={products} editProduct={editProduct} deleteProduct={deleteProduct} />
 
     </div>
   );

@@ -16,6 +16,7 @@ const ProductTable = props => (
                         <td>
                             <button
                                 className="button muted-button"
+                                onClick={() => props.editProduct(product)}
                             >
                                 Edit
               </button>

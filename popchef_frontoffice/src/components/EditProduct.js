@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AddProduct = props => {
+const EditProduct = props => {
+    const [product, setProduct] = useState(props.currentProduct);
 
-    const [product, setProduct] = useState({ id: null, name: "", description: "", price: "" });
+    useEffect(
+        () => {
+            setProduct(props.currentProduct);
+        },
+        [props]
+    );
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -13,8 +19,7 @@ const AddProduct = props => {
         <form
             onSubmit={event => {
                 event.preventDefault();
-                props.addProduct(product);
-                setProduct({ id: null, name: "", description: "", price: "" });
+                props.updateProduct(product.id, product);
             }}
         >
             <label>Nom</label>
@@ -38,9 +43,15 @@ const AddProduct = props => {
                 value={product.price}
                 onChange={handleInputChange}
             />
-            <button>Add new product</button>
+            <button>modifier ce produit</button>
+            <button
+                onClick={() => props.setEditing(false)}
+                className="button muted-button"
+            >
+                Cancel
+      </button>
         </form>
     );
 };
 
-export default AddProduct;
+export default EditProduct;
